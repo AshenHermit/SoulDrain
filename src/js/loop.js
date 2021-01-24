@@ -7,6 +7,7 @@ var game_draw_states=[
             ctx.text('loading, '+resources.load_count+' items left', 8, 8);
             ctx.fill(255, 255, 255);
         }else{
+            console.log("loaded")
             world.init()
             game_state = 1
             update();

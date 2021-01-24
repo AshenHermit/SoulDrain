@@ -7,6 +7,7 @@ class World{
         this.local_player = null
         this.players = []
         this.entities = []
+        this.camera = new Camera()
 
         this.register_broadcast_callbacks()
     }
@@ -17,10 +18,11 @@ class World{
         this.update_array(this.entities)
     }
     draw(){
-        try{
-            ctx.translate(-this.local_player.position.x*2+window.innerWidth/2, -this.local_player.position.y*2+window.innerHeight/2)
-            ctx.scale(2);
-        }catch(e){}
+        if(this.local_player){
+            this.camera.position.x = this.local_player.position.x
+            this.camera.position.y = this.local_player.position.y
+        }
+        this.camera.draw()
         
         this.draw_array(this.entities)
 

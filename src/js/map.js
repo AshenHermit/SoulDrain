@@ -9,6 +9,17 @@ function create_map(width, height){
     }
     return data;
 }
+function copy_2d_map(data){
+    var data_copy = []
+    for(let x=0; x<data.length; x++){
+        data_copy.push([])
+        for(let y=0; y<data[0].length; y++){
+            data_copy[x].push([])
+            data_copy[x][y] = data[x][y]
+        }
+    }
+    return data_copy;
+}
 
 class Map{
     constructor(){
@@ -37,6 +48,8 @@ class Map{
             copy.push({
                 position_x: this.chunks[i].position.x,
                 position_y: this.chunks[i].position.y,
+                width: this.chunks[i].width,
+                height: this.chunks[i].height,
                 data: this.chunks[i].data,
             })
         }
@@ -47,6 +60,8 @@ class Map{
         for (let i = 0; i < copy.length; i++) {
             let new_chunk = new Chunk(this.chunk_size, this.chunk_size, this)
             new_chunk.position = vector2(copy[i].position_x, copy[i].position_y)
+            new_chunk.width = copy[i].width
+            new_chunk.height = copy[i].height
             new_chunk.data = copy[i].data
             this.chunks.push(new_chunk)
         }
@@ -56,7 +71,9 @@ class Map{
         for (let i = 0; i < this.chunks.length; i++) {
             this.chunks[i].for_each((x, y, v)=>{
                 if(v>1){
-                    ctx.image(this.block_id_to_texture[v], x*this.cell_size, y*this.cell_size)
+                    if(distance(world.camera.position.x, world.camera.position.y, x*this.cell_size, y*this.cell_size)<512){
+                        ctx.image(this.block_id_to_texture[v], x*this.cell_size, y*this.cell_size)
+                    }
                 }
             })
         }
@@ -85,10 +102,15 @@ class Chunk{
         this.data = create_map(width, height)
     }
 
+    copy_data(){
+        return copy_2d_map(this.data)
+    }
+
     for_each(func){
         for(let x=0; x < this.width; x++){
             for(let y=0; y < this.height; y++){
-                func(x, y, this.data[x][y])
+                if(func(x, y, this.data[x][y]))
+                    break;
             }
         }
     }
@@ -97,9 +119,9 @@ class Chunk{
         return !(x<0 || y<0 || x>=this.width || y>=this.height)
     }
     set_block_by_key(x, y, key){
-        this.set_block(x, y, this.parent_map.key_to_block_id[key])
+        this.set_block_id(x, y, this.parent_map.key_to_block_id[key])
     }
-    set_block(x, y, id){
+    set_block_id(x, y, id){
         if (this.valid_pos(x, y)){
             this.data[x][y] = id
         }
@@ -117,7 +139,7 @@ class Chunk{
         if (this.valid_pos(x, y)){
             return this.data[x][y]
         }else{
-            return 0
+            return 1
         }
     }
 
