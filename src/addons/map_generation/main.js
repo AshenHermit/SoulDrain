@@ -43,15 +43,15 @@ this.init = function(){
         })
 
         for (let i = 0; i < 8; i++) {
-            this.generation_pass(world.map.chunks[0])   
+            this.generation_pass(world.map.chunks[0])
         }
-
-        world.map.chunks[0].for_each((x, y, v)=>{
-            if(v==0){
-                world.local_player.position.x = x * world.map.cell_size
-                world.local_player.position.y = y * world.map.cell_size
-                return true
-            }
-        })
     }
+
+    world.map.chunks[0].for_each((x, y, v)=>{
+        if(v==0){
+            world.local_player.position.x = x * world.map.cell_size
+            world.local_player.position.y = y * world.map.cell_size
+            return true
+        }
+    })
 }

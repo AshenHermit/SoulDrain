@@ -16,9 +16,6 @@ class Addon{
             this._loaded = true
             this._script = script
             eval(this._script)
-            if(this.init){
-                this.init()
-            }
 
             resources.load_count -= 1
         }).bind(this))
@@ -28,7 +25,6 @@ class Addon{
 class AddonManager{
     constructor(){
         this.addons = []
-        
     }
 
     load_addons(folder){
@@ -38,6 +34,28 @@ class AddonManager{
         for (let i = 0; i < folders.length; i++) {
             this.addons.push(new Addon(folders[i]))
             console.log(`loaded addon "${folders[i]}"`)
+        }
+    }
+
+    init(){
+        for (let i = 0; i < this.addons.length; i++) {
+            if(this.addons[i].init){
+                this.addons[i].init()
+            }
+        }
+    }
+    update(){
+        for (let i = 0; i < this.addons.length; i++) {
+            if(this.addons[i].update){
+                this.addons[i].update()
+            }
+        }
+    }
+    draw(){
+        for (let i = 0; i < this.addons.length; i++) {
+            if(this.addons[i].draw){
+                this.addons[i].draw()
+            }
         }
     }
 }

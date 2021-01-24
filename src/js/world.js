@@ -12,9 +12,12 @@ class World{
         this.register_broadcast_callbacks()
     }
     init(){
+        addon_manager.init()
+
         this.init_array(this.entities)
     }
     update(){
+        addon_manager.update()
         this.update_array(this.entities)
     }
     draw(){
@@ -23,9 +26,9 @@ class World{
             this.camera.position.y = this.local_player.position.y
         }
         this.camera.draw()
-        
-        this.draw_array(this.entities)
 
+        addon_manager.draw()
+        this.draw_array(this.entities)
         this.map.draw()
     }
 
